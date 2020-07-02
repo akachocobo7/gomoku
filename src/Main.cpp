@@ -13,7 +13,7 @@ private:
     void drawGridLines() const {
         
         // 線を引く
-        for (auto i : Range(1, 11)) {
+        for (auto i : Range(1, 10)) {
             Line(i * CellSize, 0, i * CellSize, 11 * CellSize)
                 .draw(4, ColorF(0.25));
             
@@ -117,9 +117,14 @@ void Main(){
     // 背景色
     Scene::SetBackground(ColorF(0.8, 1.0, 0.9));
     
+    constexpr Point offset(70, 30);
+    
     GameBoard gameBoard;
     
     while (System::Update()) {
+        // 2D 描画とマウスカーソル座標を移動
+        Transformer2D tr(Mat3x2::Translate(offset), true);
+        
         gameBoard.update();
         
         gameBoard.draw();
