@@ -6,6 +6,9 @@ private:
     // 11x11 の二次元配列
     Grid<int32> m_grid = Grid<int32>(11, 11);
     
+    // これから置くマーク
+    int32 m_currentMark = O_Mark;
+    
     // 格子を描く
     void drawGridLines() const {
         
@@ -77,8 +80,32 @@ public:
         */
     }
     
+    void update() {
+        
+        // 11x11 のセル
+        for (auto p : step(Size(11, 11))) {
+            
+            // セル
+            const Rect cell(p * CellSize, CellSize);
+            
+            // セルのマーク
+            const int32 mark = m_grid[p];
+            
+            // セルが空白で、なおかつクリックされたら
+            if ((mark == 0) && cell.leftClicked()) {
+                
+                // セルにマークを書き込む
+                m_grid[p] = m_currentMark;
+                
+                // 現在のマークを入れ替える
+                m_currentMark = ((m_currentMark == O_Mark) ? X_Mark : O_Mark);
+            }
+        }
+    }
+    
     // 描画
     void draw() const {
+        
         drawGridLines();
         
         drawCells();
@@ -93,6 +120,8 @@ void Main(){
     GameBoard gameBoard;
     
     while (System::Update()) {
+        gameBoard.update();
+        
         gameBoard.draw();
     }
 }
