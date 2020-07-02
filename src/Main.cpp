@@ -3,8 +3,12 @@
 class GameBoard {
 private:
     
+    // 11x11 の二次元配列
+    Grid<int32> m_grid = Grid<int32>(11, 11);
+    
     // 格子を描く
     void drawGridLines() const {
+        
         // 線を引く
         for (auto i : Range(1, 11)) {
             Line(i * CellSize, 0, i * CellSize, 11 * CellSize)
@@ -17,12 +21,34 @@ private:
     
     // セルを描く
     void drawCells() const {
+        
+        // 11x11 のセル
         for (auto p : step(Size(11, 11))) {
+            
             // セル
             const Rect cell(p * CellSize, CellSize);
             
+            // セルのマーク
+            const int32 mark = m_grid[p];
+            
+            if (mark == X_Mark) {
+                // X マークを描く
+                Shape2D::Cross(CellSize * 0.4, 10, cell.center())
+                    .draw(ColorF(0.2));
+                
+                continue;
+            }
+            else if (mark == O_Mark) {
+                // O マークを描く
+                Circle(cell.center(), CellSize * 0.4 - 2)
+                    .drawFrame(9, 0, ColorF(0.2));
+                
+                continue;
+            }
+            
             // セルがマウスオーバーされたら
             if (cell.mouseOver()) {
+                
                 // カーソルを手のアイコンに
                 Cursor::RequestStyle(CursorStyle::Hand);
                 
@@ -37,6 +63,20 @@ public:
     // セルの大きさ
     static constexpr int32 CellSize = 50;
     
+    // O マークの値
+    static constexpr int32 O_Mark = 1;
+    
+    // X マークの値
+    static constexpr int32 X_Mark = 2;
+    
+    GameBoard() {
+        /*
+        // 表示テスト用
+        m_grid[{0, 0}] = O_Mark;
+        m_grid[{1, 0}] = X_Mark;
+        */
+    }
+    
     // 描画
     void draw() const {
         drawGridLines();
@@ -46,6 +86,7 @@ public:
 };
 
 void Main(){
+    
     // 背景色
     Scene::SetBackground(ColorF(0.8, 1.0, 0.9));
     
@@ -55,3 +96,4 @@ void Main(){
         gameBoard.draw();
     }
 }
+
